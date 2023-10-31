@@ -3,16 +3,22 @@ import PyPDF2
 import os
 
 lingua = "pt"
-text = ""
+livro = "o_pequeno_principe.pdf"
 
-with open("Letra-do-Hino-Nacional-brasileiro.pdf", "rb") as pdf_file:
+if not os.path.exists("audios"):
+    os.makedirs("audios")
+
+with open(livro, "rb") as pdf_file:
     pdf_reader = PyPDF2.PdfReader(pdf_file)
-   
+
     for page_num in range(len(pdf_reader.pages)):
         page = pdf_reader.pages[page_num]
-        text += page.extract_text()
+        text = page.extract_text()
 
-tts = gTTS(text, lang=lingua)
-tts.save("audio.mp3")
+        text_parts = [text[i:i + 2000] for i in range(0, len(text), 2000)]
 
-os.system('ffplay -autoexit -nodisp audio.mp3')
+        for i, text_part in enumerate(text_parts):
+            if text_part.strip():  # Verifica se o texto não está vazio
+                tts = gTTS(text_part, lang=lingua)
+                audio_filename = f"audios/{os.path.splitext(livro)[0]}_page_{page_num + 1}_part_{i + 1}.mp3"
+                tts.save(audio_filename)
