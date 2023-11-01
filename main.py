@@ -15,7 +15,7 @@ with open(livro, "rb") as pdf_file:
         page = pdf_reader.pages[page_num]
         text = page.extract_text()
 
-        text_parts = [text[i:i + 2000] for i in range(0, len(text), 2000)]
+        text_parts = [text[i : i + 9999] for i in range(0, len(text), 9999)]
 
         for i, text_part in enumerate(text_parts):
             if text_part.strip():  # Verifica se o texto não está vazio
